@@ -1,0 +1,331 @@
+definitions:
+  models.AuthUserRequest:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  models.AuthUserResponse:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+      refresh_token:
+        type: string
+      token:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.CreatePhoneRequest:
+    properties:
+      description:
+        type: string
+      is_fax:
+        type: boolean
+      phone_number:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.CreatePhoneResponse:
+    properties:
+      description:
+        type: string
+      is_fax:
+        type: boolean
+      phone_id:
+        type: string
+      phone_number:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.CreateUserRequest:
+    properties:
+      age:
+        type: integer
+      login:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  models.CreateUserResponse:
+    properties:
+      age:
+        type: integer
+      login:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.GetByPhoneResponse:
+    properties:
+      description:
+        type: string
+      is_fax:
+        type: boolean
+      phone_number:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.GetUserByNameResponse:
+    properties:
+      age:
+        type: integer
+      name:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.UpdatePhoneRequest:
+    properties:
+      description:
+        type: string
+      is_fax:
+        type: boolean
+      phone_id:
+        type: string
+      phone_number:
+        type: string
+    type: object
+  models.UpdatePhoneResponse:
+    properties:
+      description:
+        type: string
+      is_fax:
+        type: boolean
+      phone_number:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: This is a api of the application
+paths:
+  /auth:
+    post:
+      consumes:
+      - application/json
+      description: Авторизация пользователя
+      operationId: login
+      parameters:
+      - description: credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/models.AuthUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Response body
+          schema:
+            $ref: '#/definitions/models.AuthUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Server Error
+          schema:
+            type: string
+      summary: login
+      tags:
+      - User
+  /phone:
+    get:
+      consumes:
+      - application/json
+      description: Получение данных по номеру телефона
+      operationId: get_by_phoneNumber_phone
+      parameters:
+      - description: phone_number
+        in: query
+        name: q
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Response body
+          schema:
+            items:
+              $ref: '#/definitions/models.GetByPhoneResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Server Error
+          schema:
+            type: string
+      summary: Get By PhoneNumber
+      tags:
+      - Phone
+    post:
+      consumes:
+      - application/json
+      description: Регистрация пользователя. Можно оставить пустым строку user_id
+        или даже убрать строку, в любом случае будет использоваться текущий пользователь.
+      operationId: create_phone
+      parameters:
+      - description: Request body
+        in: body
+        name: agent
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreatePhoneRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Response body
+          schema:
+            $ref: '#/definitions/models.CreatePhoneResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Server Error
+          schema:
+            type: string
+      summary: Create phone
+      tags:
+      - Phone
+    put:
+      consumes:
+      - application/json
+      description: Обновление данных номера
+      operationId: update_phone
+      parameters:
+      - description: Request body
+        in: body
+        name: phone
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdatePhoneRequest'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Response body
+          schema:
+            $ref: '#/definitions/models.UpdatePhoneResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Server Error
+          schema:
+            type: string
+      summary: Update Phone
+      tags:
+      - Phone
+  /phone/{phone_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление номера по phone_id
+      operationId: delete_phone
+      parameters:
+      - description: phone_id
+        in: path
+        name: phone_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Success Request
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Server Error
+          schema:
+            type: string
+      summary: Delete Phone
+      tags:
+      - Phone
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Регистрация пользователя
+      operationId: create_user
+      parameters:
+      - description: Request body
+        in: body
+        name: agent
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Response body
+          schema:
+            $ref: '#/definitions/models.CreateUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Server Error
+          schema:
+            type: string
+      summary: Create user
+      tags:
+      - User
+  /user/{name}:
+    get:
+      consumes:
+      - application/json
+      description: Получение пользователя по имени
+      operationId: get_user_by_name
+      parameters:
+      - description: name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success Request
+          schema:
+            items:
+              $ref: '#/definitions/models.GetUserByNameResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Server Error
+          schema:
+            type: string
+      summary: Get user by name
+      tags:
+      - User
+swagger: "2.0"
